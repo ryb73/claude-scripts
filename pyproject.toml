@@ -3,9 +3,7 @@ name = "claude-scripts"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-authors = [
-    { name = "Ryan", email = "rpbiwer@gmail.com" }
-]
+authors = [{ name = "Ryan", email = "rpbiwer@gmail.com" }]
 requires-python = ">=3.12"
 dependencies = []
 
@@ -15,3 +13,15 @@ claude-scripts = "claude_scripts:main"
 [build-system]
 requires = ["uv_build>=0.12.4,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.pyrefly]
+project-includes = ["**/*.py*", "**/*.ipynb"]
+search-path = ["src", "."]
+preset = "strict"
+
+[dependency-groups]
+dev = [
+    "pyrefly>=1.2.0",
+    "pyright>=1.1.411",
+    "ruff>=0.16.3",
+]

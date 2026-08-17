@@ -1,0 +1,21 @@
+[lint]
+select = ["ALL"]
+# COM812: would like to enable but incompatible; see https://github.com/astral-sh/ruff/issues/9216
+ignore = [
+    "ANN201",
+    "ANN202",
+    "COM812",
+    "CPY001",
+    "D",
+    "PLR2004",
+    "S101",
+    "TD003",
+    "TRY003",
+    "T201",
+]
+
+[lint.isort]
+split-on-trailing-comma = false
+
+[format]
+skip-magic-trailing-comma = true
