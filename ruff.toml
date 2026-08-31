@@ -7,11 +7,12 @@ ignore = [
     "COM812",
     "CPY001",
     "D",
+    "PLR0911",
     "PLR2004",
     "S101",
+    "T201",
     "TD003",
     "TRY003",
-    "T201",
 ]
 
 [lint.isort]

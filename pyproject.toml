@@ -5,7 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 authors = [{ name = "Ryan", email = "rpbiwer@gmail.com" }]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "claude-agent-sdk>=0.2.139",
+]
 
 [project.scripts]
 claude-scripts = "claude_scripts:main"
