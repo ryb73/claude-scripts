@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 from collections.abc import Iterable
 from typing import assert_never
@@ -61,6 +62,10 @@ def render_content_block(b: ContentBlock):
 
 
 async def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--pretty", action="store_true")
+    args = parser.parse_args()
+
     # Agentic loop: streams messages as Claude works
     async for message in query(
         prompt="""
@@ -92,6 +97,10 @@ async def main():
             max_budget_usd=2,
         ),
     ):
+        if not args.pretty:
+            print(repr(message))
+            continue
+
         # Print human-readable output
         match message:
             case ResultMessage(
