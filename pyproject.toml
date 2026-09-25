@@ -5,12 +5,11 @@ description = "Add your description here"
 readme = "README.md"
 authors = [{ name = "Ryan", email = "rpbiwer@gmail.com" }]
 requires-python = ">=3.12"
-dependencies = [
-    "claude-agent-sdk>=0.2.139",
-]
+dependencies = ["claude-agent-sdk>=0.2.139"]
 
 [project.scripts]
 claude-scripts = "claude_scripts:main"
+claude-plan = "claude_scripts.plan:main"
 
 [build-system]
 requires = ["uv_build>=0.12.4,<0.13.0"]
@@ -21,9 +20,16 @@ project-includes = ["**/*.py*", "**/*.ipynb"]
 search-path = ["src", "."]
 preset = "strict"
 
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib", "-m", "not integration"]
+markers = ["integration: real API calls, opt-in only (run with -m integration)"]
+asyncio_mode = "auto"
+
 [dependency-groups]
 dev = [
     "pyrefly>=1.2.0",
     "pyright>=1.1.411",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
     "ruff>=0.16.3",
 ]

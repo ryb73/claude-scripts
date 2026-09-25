@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "$0")/.." && pwd)"
+
+mkdir -p docs/plans
+config_dir=$(mktemp -d)
+trap 'rm -rf "$config_dir"' EXIT
+
+podman build -t claude-scripts-plan "$repo_root"
+
+# --userns=keep-id:uid=1000,gid=1000 maps *this host user* to UID/GID 1000
+# inside the container's user namespace -- matching the `sandbox` user baked
+# into the image (Containerfile) -- so that user can write to the bind mounts
+# below (which are owned by this host user), without ever running as root.
+podman run --rm \
+  --userns=keep-id:uid=1000,gid=1000 \
+  --user sandbox \
+  -v "$(pwd)":/workspace:ro,Z \
+  -v "$(pwd)/docs/plans":/workspace/docs/plans:Z \
+  -v "$config_dir":/home/sandbox/.claude:Z \
+  -w /workspace \
+  -e ANTHROPIC_API_KEY \
+  claude-scripts-plan \
+  claude-plan "$@"
