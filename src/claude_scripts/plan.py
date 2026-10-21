@@ -67,7 +67,6 @@ async def run_planning_query(
         tools=PLANNING_ALLOWED_TOOLS,
         disallowed_tools=["mcp*"],
         permission_mode="plan",
-        model="claude-sonnet-5",
         max_budget_usd=2,
         env=env or {},
         stderr=_print_stderr,
