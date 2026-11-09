@@ -35,7 +35,7 @@ FILENAME_BUDGET_ENV_VAR = "CLAUDE_PLAN_FILENAME_MAX_BUDGET_USD"
 DEFAULT_FILENAME_BUDGET_USD = 1.0
 
 FILENAME_MODEL_ENV_VAR = "CLAUDE_PLAN_FILENAME_MODEL"
-DEFAULT_FILENAME_MODEL = "claude-haiku-4-5-20251001"
+DEFAULT_FILENAME_MODEL = "claude-haiku-5-5"
 
 
 def get_budget_usd(env_var: str, default: float) -> float:
@@ -110,11 +110,7 @@ async def run_planning_query(
 
 
 async def run_filename_query(
-    plan_file_path: Path,
-    cwd: Path,
-    *,
-    pretty: bool,
-    env: dict[str, str] | None = None,
+    plan_file_path: Path, cwd: Path, *, pretty: bool, env: dict[str, str] | None = None
 ) -> None:
     """Have Claude pick a destination under docs/plans/ and copy the plan there.
 
