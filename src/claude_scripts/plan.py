@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import os
 import sys
 from pathlib import Path
 
@@ -26,6 +27,31 @@ PLANNING_ALLOWED_TOOLS = [
 ]
 
 COPY_ALLOWED_TOOLS = ["Read", "Glob", "Grep", "Write", "Bash"]
+
+PLANNING_BUDGET_ENV_VAR = "CLAUDE_PLAN_MAX_BUDGET_USD"
+DEFAULT_PLANNING_BUDGET_USD = 2.0
+
+FILENAME_BUDGET_ENV_VAR = "CLAUDE_PLAN_FILENAME_MAX_BUDGET_USD"
+DEFAULT_FILENAME_BUDGET_USD = 1.0
+
+FILENAME_MODEL_ENV_VAR = "CLAUDE_PLAN_FILENAME_MODEL"
+DEFAULT_FILENAME_MODEL = "claude-haiku-4-5-20251001"
+
+
+def get_budget_usd(env_var: str, default: float) -> float:
+    """Read a query's spend cap from the environment.
+
+    Falls back to `default` when the variable is unset or empty, and fails
+    loudly when it is set to something that isn't a number.
+    """
+    raw = os.environ.get(env_var)
+    if not raw:
+        return default
+    try:
+        return float(raw)
+    except ValueError:
+        msg = f"{env_var} must be a number, got {raw!r}"
+        raise ValueError(msg) from None
 
 
 def update_plan_file_path(current: Path | None, message: Message) -> Path | None:
@@ -67,7 +93,9 @@ async def run_planning_query(
         tools=PLANNING_ALLOWED_TOOLS,
         disallowed_tools=["mcp*"],
         permission_mode="plan",
-        max_budget_usd=2,
+        max_budget_usd=get_budget_usd(
+            PLANNING_BUDGET_ENV_VAR, DEFAULT_PLANNING_BUDGET_USD
+        ),
         env=env or {},
         stderr=_print_stderr,
     )
@@ -112,8 +140,10 @@ async def run_filename_query(
         permission_mode="bypassPermissions",
         add_dirs=[str(plan_file_path.parent)],
         cwd=str(cwd),
-        model="claude-haiku-4-5-20251001",
-        max_budget_usd=1,
+        model=os.environ.get(FILENAME_MODEL_ENV_VAR) or DEFAULT_FILENAME_MODEL,
+        max_budget_usd=get_budget_usd(
+            FILENAME_BUDGET_ENV_VAR, DEFAULT_FILENAME_BUDGET_USD
+        ),
         env=env or {},
         stderr=_print_stderr,
     )
